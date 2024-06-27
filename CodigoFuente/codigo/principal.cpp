@@ -21,7 +21,8 @@ void menuprincipal(){
     cout << "Que desea realizar? " << endl;
     cout << "1.Registrar Usuario" << endl;
     cout << "2.Registrar Mesa" << endl;
-    cout << "3.Registrar Combo" << endl;
+    cout << "3.Registrar Combo\n" << endl;
+    cout << "Selecione una opcion: ";
     cin >> opcion;
 
     do{
@@ -35,14 +36,11 @@ void menuprincipal(){
         case 3:
             RegCombos();
             break;
-        case 4:
-             cout << "Adiós" << endl;
-        break;
         default:
             cout << "Opción no válida" << endl;
         break;
     
     }
 
-} while (opcion != 4);
+} while (opcion != 3);
 }

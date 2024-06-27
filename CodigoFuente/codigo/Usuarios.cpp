@@ -1,18 +1,18 @@
-#include <iostream> 
+#include <iostream>
 #include <string.h>
 #include "variables.h"
 
 using namespace std;
 
-USUARIO usuarios[MAX_REGISTERS]; //arreglo de estructuras de tipo USUARIO
-int pos = 0; 
+USUARIO usuarios[MAX_REGISTERS]; // arreglo de estructuras de tipo USUARIO
+int pos = 0;
 
-//funcion para agregar un usuario
-int obtPos(char id);
+// funcion para agregar un usuario
+int obtPos(const char* id);
 void AgregarUsuario(USUARIO *u);
-void editarUsuario(char id, USUARIO *u);
-void eliminarUsuario(char id);
-USUARIO buscarUsuario(char id);
+void editarUsuario(const char* id, USUARIO *u);
+void eliminarUsuario(const char* id);
+USUARIO buscarUsuario(const char* id);
 int menu();
 void principal();
 void pedirDatos();
@@ -27,10 +27,10 @@ void agregarUsuario(USUARIO *u){
     pos ++;
 }
 
-USUARIO buscarUsuario(char id){
+USUARIO buscarUsuario(const char* id){
     for (int i = 0; i < pos; i++)
     {
-        if (id == usuarios[i].id)
+        if (strcmp(id, usuarios[i].id) == 0)
         {
             return usuarios[i];
         }
@@ -39,25 +39,25 @@ USUARIO buscarUsuario(char id){
     return u;
 }
 
-int obtPos(char id){
+int obtPos(const char* id){
     for (int i = 0; i < pos; i++)
     {
-        if (id == usuarios[i].id)
+        if (strcmp(id, usuarios[i].id) == 0)
         {
             return i;
         }
     }
     return -1;
 }
-  
-void editarUsuario(char id, USUARIO *u){
+
+void editarUsuario(const char* id, USUARIO *u){
     int pos = obtPos(id);
     strcpy(usuarios[pos].nombres, u->nombres);
     strcpy(usuarios[pos].apellidos, u->apellidos);
     strcpy(usuarios[pos].telefono, u->telefono);
 }
 
-void eliminarUsuario(char id){
+void eliminarUsuario(const char* id){
     int pos = obtPos(id);
     for (int i = pos; i < pos; i++)
     {
@@ -81,65 +81,49 @@ int menu(){
 }
 
 void principal(){
-    int op;
-    do
-    {
-        op = menu();
-        switch (op)
-        {
-        case 1:
-            pedirDatos();
-            break;
-
-        case 2:
-            editarDatos();
-            break;
-
-        case 3:
-            eliminarDatos();
-            break;
-
-        case 4:
-            buscarxID();
-            break;
-
-        case 5:
-            mostrarDatos();
-            break;
-
-        case 6:
-            cout << "Saliendo...\n";
-            break;
-
-        default:
-            cout << "Opcion no valida\n";
-            break;  
-    }
-    } while (op != 6);
+    int opcion;
+    do{
+        opcion = menu();
+        switch(opcion){
+            case 1:
+                pedirDatos();
+                break;
+            case 2:
+                editarDatos();
+                break;
+            case 3:
+                eliminarDatos();
+                break;
+            case 4:
+                buscarxID();
+                break;
+            case 5:
+                mostrarDatos();
+                break;
+            case 6:
+                cout << "Saliendo del programa..." << endl;
+                break;
+            default:
+                cout << "Opcion invalida, por favor intente de nuevo." << endl;
+        }
+    } while(opcion != 6);
 }
 
 void pedirDatos(){
-    USUARIO usuarios;
-    cout << "Datos del usuario\n";
-    cout << "Ingrese el ID del cliente (cedula): ";
-    cin >> usuarios.id;
-
-    if (obtPos(usuarios.id) != -1)
-    {
-        cout << "=========== EL USUARIO YA EXISTE ============ \n";
-        return;
-    }
-    cout << "Nombres: ";
-    scanf(" %[^\n]", usuarios.nombres);
-    cout << "Apellidos: ";
-    scanf(" %[^\n]", usuarios.apellidos);
-    cout << "Telefono: ";
-    cin >> usuarios.telefono;
-    cout << " Escriba el la cantidad de personas que asistiran: ";
-    cin >> usuarios.cantPersonas;
-    cout << " Escriba la fecha de la reserva: ";
-    cin >> usuarios.fecha;
-    agregarUsuario(&usuarios);
+    USUARIO usuario;
+    cout << "Ingrese nombres: ";
+    scanf(" %[^\n]", usuario.nombres); 
+    cout << "Ingrese apellidos: ";
+    scanf(" %[^\n]", usuario.apellidos);
+    cout << "Ingrese ID (cedula): ";
+    cin >> usuario.id;
+    cout << "Ingrese telefono: ";
+    cin >> usuario.telefono;
+    cout << "Ingrese cantidad de personas: ";
+    cin >> usuario.cantPersonas;
+    cout << "Ingrese fecha de reserva (dd-mm-aaaa): ";
+    cin >> usuario.fecha;
+    agregarUsuario(&usuario);
     cout << "============= USUARIO AGREGADO =============== \n";
 }
 
@@ -155,7 +139,7 @@ void mostrarDatos(){
 }
 
 void buscarxID(){
-    char id;
+    char id[20];
     cout << "Ingrese el ID del cliente a buscar (cedula): ";
     cin >> id;
     if (obtPos(id) == -1){
@@ -179,7 +163,7 @@ void showData(USUARIO &u){
 
 void editarDatos()
 {
-    char id;
+    char id[20];
     cout << "Ingrese el ID del usuario a editar\n";
     cin >> id;
     if (obtPos(id) == -1)
@@ -206,7 +190,7 @@ void editarDatos()
 
 void eliminarDatos()
 {
-    char id;
+    char id[20];
     cout << "Usuario a eliminar";
     cin >> id;
     if (obtPos(id) == -1)

@@ -31,8 +31,7 @@ void hacerReserva() {
  mostrarMesasDisponibles();
 
     cout << "A que nombre desea hacer la reserva?";
-    cin >> nombre;
-
+    scanf(" %[^\n]", nombre); 
     cout << "Ingrese el numero de mesa deseada (1-" << NUM_MESAS << "): ";
     cin >> mesa;
     mesa--; 

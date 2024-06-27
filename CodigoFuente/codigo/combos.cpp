@@ -1,7 +1,6 @@
 //Registrar combos en un sistema de reservas de un restaurante
 #include <iostream>
 #include <string.h>
-#include "variables.h"
 
 using namespace std;
 
@@ -12,21 +11,20 @@ void RegCombos()
     int precio;
 
     cout << "--------- Bienvenido al menu de combos -----------" << endl;
-    cout << "Ingrese el combo: ";
-    cout << "A. Combo 1" << endl;
-    cout << "B. Combo 2" << endl;
-    cout << "C. Combo 3" << endl;
-    cout << "D. Combo 4" << endl;
-    cout << "E. Combo 5" << endl;
-    cout << "F. Combo 6" << endl;
-    cout << "G. Combo 7" << endl;
-    cout << "H. Combo 8" << endl;
-    cout << "I. Combo 9" << endl;
-    cout << "J. Combo 10" << endl;
-    cout << "K. Combo 11" << endl;
-    cout << "L. Combo 12" << endl;
-    cout << "M. Combo 13" << endl;
-    cout << "N. Combo 14" << endl;
+   
+    cout << "A. Combo 1: Leche Agria, gallo pinto y totilla" << endl << endl;
+    cout << "B. Combo 2: Cerdo frito, gallo pinto, totilla y cebollita" << endl << endl;
+    cout << "C. Combo 3: Dos huevos enteros, gallo pinto y totilla" << endl << endl;
+    cout << "D. Combo 4: Dos huevos rancheros, gallo pinto y totilla" << endl << endl;
+    cout << "E. Combo 5: Dos huevos revueltos, gallo pinto y totilla" << endl << endl;
+    cout << "F. Combo 6: Dos huevos revueltos con jamon, gallo pinto y totilla" << endl << endl;
+    cout << "G. Combo 7: Dos huevos revueltos con chorizo, gallo pinto y totilla" << endl << endl;
+    cout << "H. Combo 8: Chorizo criollo, gallo pinto, tortilla y cebollita." << endl << endl;
+    cout << "I. Combo 9: Nacatamal de cerdo, pan y cafe" << endl << endl;
+    cout << "J. Combo 10: Chorizo parrillero, gallo pinto, totilla y cebollita" << endl << endl;
+    cout << "K. Combo 11: Tocino, dos huevos enteros, gallo pinto y totilla" << endl << endl;
+    cout << "L. Combo 12: Chorizo parrillero, gallo pinto, dos huevos enteros, tortilla y cebollita" << endl << endl;
+     cout << "Ingrese el combo: ";
 
     cin >> combo;
 
@@ -80,14 +78,6 @@ void RegCombos()
         descripcion = "Combo 12";
         precio = 125;
         break;
-    case 'M':
-        descripcion = "Combo 13";
-        precio = 90;
-        break;
-    case 'N':
-        descripcion = "Combo 14";
-        precio = 95;
-        break;
     
     default:
         cout << "Opcion no valida" << endl;
@@ -96,7 +86,7 @@ void RegCombos()
 
     cout << "Combo: " << descripcion << endl;
     cout << "Precio: " << precio << endl;
-    cout << "Descripcion:\n " << descripcion << endl;
+    cout << "Descripcion: " << descripcion << endl;
     cout << "Reserva realizada con exito." << endl;
 
 }
