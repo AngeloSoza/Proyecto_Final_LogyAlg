@@ -35,7 +35,7 @@ void editarDatosUsuario();
 void eliminarDatoUsuario();
 void pedirDatosReserva();
 void mostrarDatosReserva();
-void showDataReserva(RESERVA &r);
+void showDataReserva(RESERVA &r); 
 void buscarxIDReserva();
 void editarDatosReserva();
 void eliminarDatoReserva();
@@ -81,6 +81,8 @@ void eliminarUsuario(int id) {
     for (int i = posi; i < posUsuarios - 1; i++) {
         usuarios[i] = usuarios[i + 1];
     }
+    USUARIO u;
+    usuarios[posUsuarios - 1] = u;
     posUsuarios--;
 }
 
@@ -186,6 +188,8 @@ void eliminarReserva(int id) {
     for (int i = posi; i < posReservas - 1; i++) {
         reservas[i] = reservas[i + 1];
     }
+    RESERVA r;
+    reservas[posReservas - 1] = r;
     posReservas--;
 }
 
@@ -200,7 +204,6 @@ void pedirDatosUsuario() {
     cin >> u.telefono;
     agregarUsuario(&u);
     guardarUsuarios();
-    cargarUsuarios();
     cout << "\n=============Usuario agregado.==============" << endl;
 }
 
@@ -245,6 +248,7 @@ void editarDatosUsuario() {
         cout << "Teléfono: ";
         cin >> u.telefono;
         editarUsuario(&u, id);
+        cargarUsuarios();
         cout << "======= Usuario Actualizado =======\n ";
         saveAll();
     } else {
@@ -281,7 +285,6 @@ void pedirDatosReserva() {
     cout << "=================== Datos de reserva guardados =================\n " << endl;
     agregarReserva(&r);
     guardarReservas();
-    cargarReservas(); 
 }
 
 void mostrarDatosReserva() {
@@ -335,6 +338,7 @@ void editarDatosReserva() {
         cout << "Comida: ";
         scanf(" %[^\n]", r.comida);
         editarReserva(&r, id);
+        cargarReservas();
         cout << "======= Reserva Actualizada =======\n";
         saveAll();
     } else {
