@@ -12,5 +12,6 @@ typedef struct RESERVA {
     int mesa;
     char comida[100];
     char fecha[20];
+    char hora[20];
     int CantPersonas;
 };

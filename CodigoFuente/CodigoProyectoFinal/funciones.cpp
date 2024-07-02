@@ -280,6 +280,8 @@ void pedirDatosReserva() {
     cin >> r.mesa;
     cout << "Ingrese fecha (DD/MM/AA) " << endl;
     cin >> r.fecha;
+    cout << "Ingrese hora (HH:MM) " << endl;
+    cin >> r.hora;
     cout << "Ingrese comida: " << endl;
     scanf(" %[^\n]", r.comida);
     cout << "=================== Datos de reserva guardados =================\n " << endl;
@@ -360,17 +362,17 @@ void eliminarDatoReserva() {
 //guardar en un archivo .txt
 
 void guardarUsuarios() {
-    ofstream archivo("usuarios.txt", ios::app);
-    for (int i = 0; i < posUsuarios; i++) {
-        archivo << usuarios[i].id << endl;
-        archivo << usuarios[i].nombre << endl;
-        archivo << usuarios[i].telefono << endl;
+    ofstream archivo("usuarios.txt", ios::trunc);
+    for (int i = 0; i < posUsuarios; i++ ) {
+        archivo << "ID Usuario: " << usuarios[i].id << endl;
+        archivo << "Nombre del Usuario: " << usuarios[i].nombre << endl;
+        archivo << "Telefono del Usuario: " << usuarios[i].telefono << endl;
     }
     archivo.close();
 }
 
 void cargarUsuarios() {
-    ifstream archivo("usuarios.txt", ios::app); //para que guarden los datos en el archivo, tengo que mandar el archivo cargarUsuarios a 
+    ifstream archivo("usuarios.txt", ios::trunc); //para que guarden los datos en el archivo, tengo que mandar el archivo cargarUsuarios a 
     USUARIO u;
     while (archivo >> u.id) {
         archivo >> u.nombre;
@@ -381,21 +383,22 @@ void cargarUsuarios() {
 }
 
 void guardarReservas() {
-    ofstream archivo("reservas.txt", ios::app);
+    ofstream archivo("reservas.txt", ios::trunc);
     for (int i = 0; i < posReservas; i++) {
-        archivo << reservas[i].id << endl;
-        archivo << reservas[i].usuario_id << endl;
-        archivo << reservas[i].CantPersonas << endl;
-        archivo << reservas[i].mesa << endl;
-        archivo << reservas[i].fecha << endl;
-        archivo << reservas[i].comida << endl;
+        archivo << "ID Reserva: " << reservas[i].id << endl;
+        archivo << "ID Usuario: " << reservas[i].usuario_id << endl;
+        archivo << "Cantidad de personas: " << reservas[i].CantPersonas << endl;
+        archivo << "Numero de mesas: " << reservas[i].mesa << endl;
+        archivo << "Fecha de la reserva: " << reservas[i].fecha << endl;
+        archivo << "Hora de la reserva (Open 6:30am- Close 12:00pm):  " << reservas[i].hora << endl;
+        archivo << "Comida: " << reservas[i].comida << endl;
     }
     archivo.close();
 
 }
 
 void cargarReservas() {
-    ifstream archivo("reservas.txt", ios::app);
+    ifstream archivo("reservas.txt", ios::trunc);
     RESERVA r;
     while (archivo >> r.id) {
         archivo >> r.usuario_id;
