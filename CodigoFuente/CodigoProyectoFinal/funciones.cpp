@@ -7,8 +7,8 @@
 using namespace std;
 
 USUARIO usuarios[MAX_RG];
-RESERVA reservas[MAX_RG];
 int posUsuarios = 0;
+RESERVA reservas[MAX_RG];
 int posReservas = 0;
 
 // CRUD
@@ -39,21 +39,22 @@ void showDataReserva(RESERVA &r);
 void buscarxIDReserva();
 void editarDatosReserva();
 void eliminarDatoReserva();
-void guardarUsuarios();
-void cargarUsuarios();
-void guardarReservas();
-void cargarReservas();
-void saveAll();
+void saveAll1();
+void saveAll2();
 
-
+//Manejo de archivos
+int loadUsers();
+void writeFile(const USUARIO &usuarios);
 void agregarUsuario(USUARIO *u) {
     usuarios[posUsuarios] = *u;
     posUsuarios++;
 }
 
 USUARIO buscarUsuario(int id) {
-    for (int i = 0; i < posUsuarios; i++) {
-        if (id == usuarios[i].id) {
+    for (int i = 0; i < posUsuarios; i++) 
+    {
+        if (id == usuarios[i].id) 
+        {
             return usuarios[i];
         }
     }
@@ -61,9 +62,13 @@ USUARIO buscarUsuario(int id) {
     return u;
 }
 
-int obtPosUsuario(int id) {
-    for (int i = 0; i < posUsuarios; i++) {
-        if (usuarios[i].id == id) {
+int obtPosUsuario(int id) 
+{
+    int posi = 0;
+    for (int i = 0; i < posUsuarios; i++) 
+    {
+        if (usuarios[i].id == id) 
+        {
             return i;
         }
     }
@@ -72,17 +77,15 @@ int obtPosUsuario(int id) {
 
 void editarUsuario(USUARIO *u, int id) {
     int posi = obtPosUsuario(id);
-    strcpy(usuarios[posi].nombre, u->nombre);
-    strcpy(usuarios[posi].telefono, u->telefono);
+    strcpy(usuarios[posi].nombre, u -> nombre);
+    strcpy(usuarios[posi].telefono, u -> telefono);
 }
 
 void eliminarUsuario(int id) {
     int posi = obtPosUsuario(id);
-    for (int i = posi; i < posUsuarios - 1; i++) {
+    for (int i = posi; i < posUsuarios; i++) {
         usuarios[i] = usuarios[i + 1];
     }
-    USUARIO u;
-    usuarios[posUsuarios - 1] = u;
     posUsuarios--;
 }
 
@@ -109,6 +112,7 @@ int menu(){
 
 void principal() {
     int opcion;
+    posUsuarios = loadUsers();
     do {
         opcion = menu();
         switch (opcion) {
@@ -151,48 +155,7 @@ void principal() {
         }
     } while (opcion != 0);
 }
-
-//Reservas
-void agregarReserva(RESERVA *r) {
-    reservas[posReservas] = *r;
-    posReservas++;
-}
-
-RESERVA buscarReserva(int id) {
-    for (int i = 0; i < posReservas; i++) {
-        if (id == reservas[i].id) {
-            return reservas[i];
-        }
-    }
-    RESERVA r;
-    return r;
-}
-
-int obtPosReserva(int id) {
-    for (int i = 0; i < posReservas; i++) {
-        if (reservas[i].id == id) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void editarReserva(RESERVA *r, int id) {
-    int posi = obtPosReserva(id);
-    reservas[posi].mesa = r->mesa;
-    strcpy(reservas[posi].comida, r->comida);
-}
-
-void eliminarReserva(int id) {
-    int posi = obtPosReserva(id);
-    for (int i = posi; i < posReservas - 1; i++) {
-        reservas[i] = reservas[i + 1];
-    }
-    RESERVA r;
-    reservas[posReservas - 1] = r;
-    posReservas--;
-}
-
+//*PEDIR DATOS DEL USUARIO*/
 void pedirDatosUsuario() {
     USUARIO u;
     cout << " ===============================================" << endl;
@@ -203,16 +166,38 @@ void pedirDatosUsuario() {
     cout << "Ingrese Telefono: ";
     cin >> u.telefono;
     agregarUsuario(&u);
-    guardarUsuarios();
+    writeFile(u);
     cout << "\n=============Usuario agregado.==============" << endl;
 }
 
+//Mostrar datos de usuario
 void mostrarDatosUsuario() {
-    for (int i = 0; i < posUsuarios; i++) {
+    for (int i = 0; i < posUsuarios; i++) 
+    {
         showDataUsuario(usuarios[i]);
+    }
+    if(posUsuarios == 0)
+    {
+        cout << "Sin Datos \n";
+        return;
     }
 }
 
+//Buscar Por ID
+void buscarxIDUsuario() {
+    int id;
+    cout << "Ingrese ID del usuario a buscar: ";
+    cin >> id;
+    if (obtPosUsuario(id) == -1) {
+        cout << "Usuario no encontrado." << endl;
+        return;
+    }
+    USUARIO u;
+    u = buscarUsuario(id);
+    showDataUsuario(u);
+}
+
+//ShowDataUsuario
 void showDataUsuario(USUARIO &u) {
     cout << "=================================" << endl;
     cout << "ID: " << u.id << endl;
@@ -221,91 +206,133 @@ void showDataUsuario(USUARIO &u) {
     cout << "=================================" << endl;
 }
 
-void buscarxIDUsuario() {
-    int id;
-    cout << "Ingrese ID del usuario a buscar: ";
-    cin >> id;
-    USUARIO u = buscarUsuario(id);
-    if (u.id != 0) {
-        showDataUsuario(u);
-    } else {
-        cout << "==== Usuario no encontrado ======" << endl;
-    }
-}
-
+//Editar Datos Usuario
 void editarDatosUsuario() {
     int id;
     cout << "Ingrese ID del usuario a editar: ";
     cin >> id;
+    if (obtPosUsuario(id)== -1) {
+        cout << "Usuario no encontrado." << endl;
+        return;
+    }
     USUARIO u = buscarUsuario(id);
-    if (u.id != 0) {
-        cout <<" ================================= " << endl;
-        cout << "Datos actuales:" << endl;
-        showDataUsuario(u);
-        cout << "Ingrese nuevos datos:" << endl;
+    showDataUsuario(u);
+        cout << "===== Datos actuales =======" << endl;
         cout << "Nombre: ";
         scanf(" %[^\n]", u.nombre);
         cout << "Teléfono: ";
         cin >> u.telefono;
         editarUsuario(&u, id);
-        cargarUsuarios();
         cout << "======= Usuario Actualizado =======\n ";
-        saveAll();
-    } else {
-        cout << "Usuario no encontrado." << endl;
+        saveAll1();
     }
-}
 
-void eliminarDatoUsuario() {
+    //Eliminar Datos Usuario
+    void eliminarDatoUsuario() {
     int id;
     cout << " ================================================== " << endl;
     cout << "Ingrese ID del usuario a eliminar:\n ";
     cin >> id;
+    if (obtPosUsuario(id) == -1) {
+        cout << "Usuario no encontrado." << endl;
+        return;
+    }
     eliminarUsuario(id);
-    saveAll();
+    saveAll1();
     cout << "=============Usuario eliminado.==============" << endl;
-    
 }
 
-void pedirDatosReserva() {
+//Reservas
+int loadReservations();
+void writeFile(const RESERVA &reservas);
+
+void agregarReserva(RESERVA *r) {
+    reservas[posReservas] = *r;
+    posReservas++;
+}
+
+RESERVA buscarReserva(int id) {
+    for (int i = 0; i < posReservas; i++)
+     {
+        if (id == reservas[i].id) 
+        {
+            return reservas[i];
+        }
+    }
     RESERVA r;
-    cout << " ============================================================ " << endl;
+    return r;
+}
+int obtPosReserva(int id) 
+{
+    int posi = 0;
+    for (int i = 0; i < posReservas; i++) 
+    {
+        if (reservas[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+void editarReserva(RESERVA *r, int id) {
+    int posi = obtPosReserva(id);
+    strcpy(reservas[posi].fecha, r->fecha);
+    strcpy(reservas[posi].hora, r->hora);
+    strcpy(reservas[posi].comida, r->comida);
+    reservas[posi].id = r->id;
+    reservas[posi].mesa = r->mesa;
+    reservas[posi].CantPersonas = r->CantPersonas;
+}
+
+void eliminarReserva(int id) {
+    int posi = obtPosReserva(id);
+    for (int i = posi; i < posReservas; i++) 
+    {
+        reservas[i] = reservas[i + 1];
+    }
+    posReservas--;
+}
+//Pedir Datos Reserva
+void pedirDatosReserva() {
+    RESERVA reservas;
+    cout << "Datos de la reserva\n";
     cout << "Ingrese ID de la reserva: " << endl;
-    cin >> r.id;
+    cin >> reservas.id;
+    if(obtPosReserva(reservas.id) != -1)
+    {
+        cout << "El ID de la reserva ya existe. No se puede agregar la reserva." << endl;
+        return;
+    }
     cout << "Ingrese ID del usuario: " << endl;
-    cin >> r.usuario_id;
+    cin >> reservas.usuario_id;
+    if (obtPosUsuario(reservas.usuario_id) == -1) {
+        cout << "El ID del Usuario no coincide con ningun Usuario ya agregado, por favor, agregue un usuario nuevo." << endl;
+        return;
+    }
     cout << "Ingrese la cantidad de personas que asistiran: \n";
-    cin >> r.CantPersonas;
+    cin >> reservas.CantPersonas;
     cout << "Ingrese numero de mesa que necesita (tenga en cuenta que cada mesa cuenta con 4 sillas): \n";
-    cin >> r.mesa;
-    cout << "Ingrese fecha (DD/MM/AA) " << endl;
-    cin >> r.fecha;
-    cout << "Ingrese hora (HH:MM) " << endl;
-    cin >> r.hora;
+    cin >> reservas.mesa;
+    cout << "Ingrese fecha (DD/MM/AA): " << endl;
+    cin >> reservas.fecha;
+    cout << "Ingrese hora (open: 6:30 AM - close: 12:30 PM): " << endl;
+    cin >> reservas.hora;
     cout << "Ingrese comida: " << endl;
-    scanf(" %[^\n]", r.comida);
+    scanf(" %[^\n]", reservas.comida);
+    agregarReserva(&reservas);
     cout << "=================== Datos de reserva guardados =================\n " << endl;
-    agregarReserva(&r);
-    guardarReservas();
+    writeFile(reservas);
 }
 
 void mostrarDatosReserva() {
-    for (int i = 0; i < posReservas; i++) {
-        cout << "Datos de la reserva " << endl;
+    for (int i = 0; i < posReservas; i++) 
+    {
         showDataReserva(reservas[i]);
     }
-}
-
-void showDataReserva(RESERVA &r) {
-    cout << "=================================" << endl;
-    cout <<" ......... Datos del usuario ........" << endl;
-    cout << "ID Reserva: " << r.id << endl;
-    cout << "ID Usuario: " << r.usuario_id << endl;
-    cout << "Cantidad de personas: " << r.CantPersonas << endl;
-    cout << "Mesa: " << r.mesa << endl;
-    cout << "Fecha: " << r.fecha << endl;
-    cout << "Comida: " << r.comida << endl;
-    cout << "=================================" << endl;
+    if (posReservas == 0) 
+    {
+        cout << "Sin Datos \n";
+        return;
+    }
 }
 
 void buscarxIDReserva() {
@@ -313,12 +340,26 @@ void buscarxIDReserva() {
     cout << "================================================\n";
     cout << "Ingrese ID de la reserva a buscar: " << endl;
     cin >> id;
-    RESERVA r = buscarReserva(id);
-    if (r.id != 0) {
-        showDataReserva(r);
-    } else {
-        cout << "============ Reserva no encontrada. =============" << endl;
+    if (obtPosReserva(id) == -1) {
+        cout << "Reserva no encontrada." << endl;
+        return;
     }
+    RESERVA r;
+    r = buscarReserva(id);
+    showDataReserva(r);
+}
+
+void showDataReserva(RESERVA &r) {
+    cout << "=================================" << endl;
+    cout <<" ......... Datos de la reserva ........" << endl;
+    cout << "ID Reserva: " << r.id << endl;
+    cout << "ID Usuario: " << r.usuario_id << endl;
+    cout << "Cantidad de personas: " << r.CantPersonas << endl;
+    cout << "Mesa: " << r.mesa << endl;
+    cout << "Fecha: " << r.fecha << endl;
+    cout << "Hora: " << r.hora << endl;
+    cout << "Comida: " << r.comida << endl;
+    cout << "=================================" << endl;
 }
 
 void editarDatosReserva() {
@@ -326,98 +367,134 @@ void editarDatosReserva() {
     cout <<"==========================================" << endl << endl;
     cout << "Ingrese ID de la reserva a editar: " << endl;
     cin >> id;
+    if(obtPosReserva(id) == -1) {
+        cout << "Reserva no encontrada." << endl;
+        return;
+    }
     RESERVA r = buscarReserva(id);
-    if (r.id != 0) {
-        cout << "Datos actuales:" << endl;
         showDataReserva(r);
-        cout << "Ingrese nuevos datos:" << endl;
+        cout << "Datos actuales: \n" ;
         cout << "Cantidad de personas: ";
         cin >> r.CantPersonas;
         cout << "Numero de mesas (tener en cuenta que cada mesa cuenta con 4 sillas): ";
         cin >> r.mesa;
-        cout << "Fecha (dd/mm/aa): ";
+        cout << "Fecha (DD/MM/AAAA): ";
         cin >> r.fecha;
+        cout << "Hora (Formato 24 horas): ";
+        cin >> r.hora;
         cout << "Comida: ";
         scanf(" %[^\n]", r.comida);
         editarReserva(&r, id);
-        cargarReservas();
-        cout << "======= Reserva Actualizada =======\n";
-        saveAll();
-    } else {
-        cout << "========== Reserva no encontrada. ==============\n";
+        cout << "======= Registro Actualizado =======\n";
+        saveAll2();
     }
-}
 
 void eliminarDatoReserva() {
     int id;
     cout << "========================================= " << endl;
     cout << "Ingrese ID de la reserva a eliminar: " << endl;
     cin >> id;
+    if (obtPosReserva(id) == -1) {
+        cout << "Reserva no encontrada." << endl;
+        return;
+    }
     eliminarReserva(id);
+    saveAll2();
     cout << "========== Reserva eliminada =======" << endl;
-    saveAll();
-
+    
 }
 
-//guardar en un archivo .txt
-
-void guardarUsuarios() {
-    ofstream archivo("usuarios.txt", ios::trunc);
-    for (int i = 0; i < posUsuarios; i++ ) {
-        archivo << "ID Usuario: " << usuarios[i].id << endl;
-        archivo << "Nombre del Usuario: " << usuarios[i].nombre << endl;
-        archivo << "Telefono del Usuario: " << usuarios[i].telefono << endl;
+int loadUsers() {
+    ifstream archivo("usuarios.txt");
+    if(archivo.fail()){
+        return 0;
     }
+
+    int i = 0;
+    while (archivo >> usuarios[i].id) {
+        archivo.ignore();
+        archivo.getline(usuarios[i].nombre, 50);
+        archivo.getline(usuarios[i].telefono, 15);
+        i++;
+    }
+    archivo.close();
+    return i;
+}
+
+void writeFile(const USUARIO &usuarios){
+    ofstream archivo;
+    archivo.open("usuarios.txt", ios::app);
+
+    if (archivo.fail()) {
+        cout << "No se pudo abrir el archivo" << endl;
+        exit(1);
+    }
+    archivo << "Id: " << usuarios.id << endl;
+    archivo << "Nombre del cliente: " << usuarios.nombre << endl;
+    archivo << "Telefono del cliente: " << usuarios.telefono << endl;
     archivo.close();
 }
 
-void cargarUsuarios() {
-    ifstream archivo("usuarios.txt", ios::trunc); //para que guarden los datos en el archivo, tengo que mandar el archivo cargarUsuarios a 
-    USUARIO u;
-    while (archivo >> u.id) {
-        archivo >> u.nombre;
-        archivo >> u.telefono;
-        agregarUsuario(&u);
+int loadReservations() {
+    ifstream archivo("reservas.txt");
+    if(archivo.fail()){
+        return 0;
     }
+    int i = 0;
+    while (archivo >> reservas[i].id) {
+        archivo >> reservas[i].usuario_id;
+        archivo >> reservas[i].mesa;
+        archivo.ignore();
+        archivo.getline(reservas[i].comida, 100);
+        archivo.getline(reservas[i].fecha, 20);
+        archivo.getline(reservas[i].hora, 20);
+        archivo >> reservas[i].CantPersonas;
+        i++;
+    }
+    archivo.close();
+    return i;
+}
+
+void writeFile(const RESERVA &reservas){
+    ofstream archivo;
+    archivo.open("reservas.txt", ios::app);
+
+    if (archivo.fail()) {
+        cout << "No se pudo abrir el archivo" << endl;
+        exit(1);
+    }
+    archivo << "ID de la reserva: " << reservas.id << endl;
+    archivo << "ID del Cliente: " << reservas.usuario_id << endl;
+    archivo << "Numero de mesas solicitadas: " << reservas.mesa << endl;
+    archivo << "Comida solicitada: " << reservas.comida << endl;
+    archivo << "Fecha de la reserva solicitada: " << reservas.fecha << endl;
+    archivo << "Hora de la reserva: " << reservas.hora << endl;
+    archivo << "Cantidad de personas que asistiran: " << reservas.CantPersonas << endl;
     archivo.close();
 }
 
-void guardarReservas() {
-    ofstream archivo("reservas.txt", ios::trunc);
-    for (int i = 0; i < posReservas; i++) {
-        archivo << "ID Reserva: " << reservas[i].id << endl;
-        archivo << "ID Usuario: " << reservas[i].usuario_id << endl;
-        archivo << "Cantidad de personas: " << reservas[i].CantPersonas << endl;
-        archivo << "Numero de mesas: " << reservas[i].mesa << endl;
-        archivo << "Fecha de la reserva: " << reservas[i].fecha << endl;
-        archivo << "Hora de la reserva (Open 6:30am- Close 12:00pm):  " << reservas[i].hora << endl;
-        archivo << "Comida: " << reservas[i].comida << endl;
-    }
-    archivo.close();
-
-}
-
-void cargarReservas() {
-    ifstream archivo("reservas.txt", ios::trunc);
-    RESERVA r;
-    while (archivo >> r.id) {
-        archivo >> r.usuario_id;
-        archivo >> r.CantPersonas;
-        archivo >> r.mesa;
-        archivo >> r.fecha;
-        archivo >> r.comida;
-        agregarReserva(&r);
-    }
-    archivo.close();
-}
-
-void saveAll(){
+void saveAll1(){
     ofstream archivo;
     archivo.open("usuarios.txt", ios::trunc | ios::out);
     for (int i = 0; i < posUsuarios; i++) {
-        archivo << usuarios[i].id << endl;
-        archivo << usuarios[i].nombre << endl;
-        archivo << usuarios[i].telefono << endl;
+        archivo << "Nombre del cliente: " <<usuarios[i].nombre << endl;
+        archivo << "Telefono del cliente: " <<usuarios[i].telefono << endl;
+        archivo << "ID del cliente: " <<usuarios[i].id << endl;
+    }
+    archivo.close();
+}
+
+void saveAll2(){
+    ofstream archivo;
+    archivo.open("reservas.txt", ios::trunc | ios::out);
+    for (int i = 0; i < posReservas; i++) {
+        archivo << "ID de la reserva: " << reservas[i].id << endl;
+        archivo << "ID del cliente " << reservas[i].usuario_id << endl;
+        archivo << "Numero de mesas solicitadas: " << reservas[i].mesa << endl;
+        archivo << "Comida solicitada: " << reservas[i].comida << endl;
+        archivo << "fecha de la reserva: " << reservas[i].fecha << endl;
+        archivo << "hora de la reserva: " << reservas[i].hora << endl;
+        archivo << "Cantidad de personas: " << reservas[i].CantPersonas << endl;
     }
     archivo.close();
 }
